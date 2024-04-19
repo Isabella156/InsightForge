@@ -66,7 +66,6 @@ def run_scribble(code):
             '--instrumentation-metadata-file', 'metadata'
         ]
 
-        # Running the Scribble command
         result = subprocess.run(command, check=True, text=True, capture_output=True)
         print("Scribble instrumentation successful.")
         print(result.stdout)
@@ -79,3 +78,22 @@ def run_scribble(code):
         print("Failed to run Scribble:")
         print(e.stderr)
         return None
+
+def run_mythril(filename, parameters):
+    command = [
+            'myth',
+            'analyze',
+            filename,
+            '-t', parameters["transaction_depth"],
+            '--execution-timeout', 'parameters["execution_timeout"]'
+        ]
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        print("mythril verification successful.")
+        print(result.stdout)
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        print("Failed to run mythril:")
+        print(e.stderr)
+        return None
+
