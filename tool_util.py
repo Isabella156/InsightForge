@@ -1,8 +1,8 @@
 from openai import OpenAI
-
 from solcx import compile_standard, install_solc, get_installed_solc_versions, set_solc_version
-
 from solcx.exceptions import SolcError
+import subprocess
+import os
 
 def get_code_completion():
     client = OpenAI()
@@ -50,4 +50,32 @@ def compile_code(code):
     except SolcError as e:
         print("Compilation failed with errors:")
         print(e)
+        return None
+
+def run_scribble(code):
+    original_filename = "original.sol"
+    with open(original_filename, 'w') as file:
+        file.write(code)
+    print(f"Solidity code written to {original_filename}")
+
+    try:
+        command = [
+            'scribble',
+            original_filename,
+            '--output-mode', 'files',
+            '--instrumentation-metadata-file', 'metadata'
+        ]
+
+        # Running the Scribble command
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        print("Scribble instrumentation successful.")
+        print(result.stdout)
+        instructed_wrong_filename = "original.sol.instrumented"
+        instructed_correct_filename = "original.instrumented.sol"
+        os.rename(instructed_wrong_filename, instructed_correct_filename)
+        # TODO: reasonable return statement
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        print("Failed to run Scribble:")
+        print(e.stderr)
         return None

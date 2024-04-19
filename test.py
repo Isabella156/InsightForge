@@ -1,4 +1,5 @@
-from main import annotate_code, produce_completion_prompt, get_code_completion, compile_code
+from main import annotate_code, produce_completion_prompt
+from tool_util import get_code_completion, compile_code, run_scribble
 
 function_property_pairs = {
     "totalSupply": {
@@ -54,8 +55,11 @@ function_property_pairs = {
 
 def main():
     """easy test"""
-    with open("demo/code-complete-error.sol", 'r') as file:
-    # with open("demo/code-incomplete.sol", 'r') as file:
+    code_filename = "demo/code-complete-annot.sol"
+    # code_filename = "demo/code-complete.sol"
+    # code_filename = "demo/code-complete-error.sol"
+    # code_filename = "demo/code-incomplete.sol"
+    with open(code_filename, 'r') as file:
         code = file.read()
     # print("code\n")
     # print(code)
@@ -76,7 +80,8 @@ def main():
     # print("completion prompt\n")
     # print(completion_prompt)
     # get_code_completion()
-    compile_code(code)
+    # compile_code(code)
+    run_scribble(code)
     print("done")
 
 if __name__ == '__main__':
