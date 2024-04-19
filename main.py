@@ -1,74 +1,58 @@
-from prompt_toolkit import prompt
-from prompt_toolkit.completion import WordCompleter
+from input_utils import get_multiline_input, get_working_status, \
+    get_function_property_pairs, get_other_properties
 
-def get_code_input():
-    lines = []
-    print("Please enter your code. Type 'exit' on a new line to finish.")
-
-    while True:
-        line = prompt('>>> ')
-        if line == "exit":
-            break
-        lines.append(line)
-
-    user_input = '\n'.join(lines)
-
-    print("You entered:")
-    print(user_input)
-
-    return user_input
-
-def get_working_status():
-    status_completer = WordCompleter(['Complete', 'Incomplete'], ignore_case=True)
-    print("Question: Is your code complete or incomplete?")
-
-    # Ask the question
-    user_choice = prompt("Enter 'Complete' or 'Incomplete': ", completer=status_completer)
-
-    # Output the result
-    print(f"You entered: {user_choice}")
-    if(user_choice.lower() == 'complete'):
-        return True
-    else:
-        return False
-
-def get_property():
-    # if_succeeds {:msg "Transfer does not modify the sum of balances" } old(_balances[_to]) +
-    # old(_balances[msg.sender]) == _balances[_to] + _balances[msg.sender];
-    pairs = {}
-    print("Enter function and property pairs. Type 'done' when finished.")
-
-    while True:
-        # Get function name
-        function_name = prompt("Function name (type 'done' to finish): ").strip()
-        if function_name.lower() == 'done' or function_name == '':
-            break
-
-        # Get property for the function
-        property_description = prompt(f"Enter property for {function_name}: ").strip()
-
-        # Ensure property is not empty
-        if property_description:
-            # Store the pair in a dictionary
-            pairs[function_name] = property_description
-        else:
-            print("Empty property is not allowed. Please enter a valid property.")
-
-    # Display all function-property pairs
-    print("\nFunction-Property Pairs:")
+def annotate_code(code, pairs):
+    lines = code.split('\n')
     for function, property in pairs.items():
-        print(f"Function: {function}\nProperty: {property}\n")
 
-    return pairs
+        docstring = f"/// {property}\n"
+        for i, line in enumerate(lines):
+            # assumption: the function declaration is on a single line
+            if f"function {function}(" in line:
+                lines.insert(i, docstring)
+                break
+    return '\n'.join(lines)
 
 def code_completion_prompt():
+    prompt = "Prompt for Code Completion and Verification\n\n"
+    prompt += "### Code\n" + code + "\n\n"
+    prompt += "### Status: " + status + "\n\n"
+    prompt += "### Contract Description\n" + description + "\n\n"
+    prompt += "### Purpose\n" + purpose + "\n\n"
+    prompt += "### Preconditions\n" + '\n'.join(f"- {cond}" for cond in preconditions) + "\n\n"
+    prompt += "### Postconditions\n" + '\n'.join(f"- {cond}" for cond in postconditions) + "\n\n"
+    prompt += "### Function-Property Pairs\n"
+
+    for i, (function, properties) in enumerate(function_property_pairs.items(), 1):
+        prompt += f"{i}. Function: `{function}`\n"
+        prompt += "   - Property: " + properties.get('property', '') + "\n"
+        if properties.get('preconditions'):
+            prompt += "   - Preconditions: " + properties['preconditions'] + "\n"
+        if properties.get('postconditions'):
+            prompt += "   - Postconditions: " + properties['postconditions'] + "\n"
+        prompt += "\n"
+
+    prompt += "### Task\n"
+    prompt += "Please complete the provided code snippet by ensuring all functions adhere to their specified properties and the overall contract conditions. "
+    prompt += "Ensure the code is syntactically correct, adheres to the ERC20 standard, and incorporates best security practices. "
+    prompt += "Highlight any additions or changes made for clarity.\n"
+
+    return prompt
 
 def main():
-    # code = get_code_input()
+    # code_prompt = "Please enter your code. Type 'exit' on a new line to finish."
+    # code = get_multiline_input(code_prompt)
+    # print("code\n")
+    # print(code)
     # working_status = get_working_status()
-    # pair = get_property()
+    pairs = get_function_property_pairs()
+    # annotated_code = annotate_code(code, pairs)
+    # print("annotated code\n")
+    # print(annotated_code)
+    # description, purpose, precondition, postcondition = get_other_properties()
 
-    code_completion_prompt()
+
+    # code_completion_prompt()
 
 if __name__ == '__main__':
     main()
