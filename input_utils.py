@@ -35,12 +35,12 @@ def get_working_status():
 def get_function_property_pairs():
     # TODO: add instructions for scribble specification language
     pairs = {}
-    print("Enter function and property pairs. Type 'done' when finished.")
+    print("Enter function and property pairs.")
 
     while True:
         # Get function name
-        function_name = prompt("Function name (type 'done' to finish): ").strip()
-        if function_name.lower() == 'done' or function_name == '':
+        function_name = prompt("Function name (leave blank if not applicable): ").strip()
+        if function_name == '':
             break
 
         # Get property for the function
@@ -48,13 +48,21 @@ def get_function_property_pairs():
             f"Enter property for {function_name} (leave blank if not applicable): "
         ).strip()
 
+        description_description = prompt(
+            f"Enter description for {function_name} (leave blank if not applicable): "
+        ).strip()
+
+        purpose_description = prompt(
+            f"Enter purpose for {function_name} (leave blank if not applicable): "
+        ).strip()
+
         # Get preconditions for the function
         preconditions = []
         while True:
             precondition = prompt(
-                f"Enter a precondition for {function_name} (type 'done' to finish): "
+                f"Enter a precondition for {function_name} (leave blank if not applicable): "
             ).strip()
-            if precondition.lower() == 'done' or precondition == '':
+            if precondition == '':
                 break
             preconditions.append(precondition)
 
@@ -62,15 +70,17 @@ def get_function_property_pairs():
         postconditions = []
         while True:
             postcondition = prompt(
-                f"Enter a postcondition for {function_name} (type 'done' to finish): "
+                f"Enter a postcondition for {function_name} (leave blank if not applicable): "
             ).strip()
-            if postcondition.lower() == 'done' or postcondition == '':
+            if postcondition == '':
                 break
             postconditions.append(postcondition)
 
         # Store the function details in a dictionary
         pairs[function_name] = {
             "property": property_description,
+            "description": description_description,
+            "purpose": purpose_description,
             "preconditions": preconditions,
             "postconditions": postconditions
         }
@@ -80,6 +90,8 @@ def get_function_property_pairs():
     for function, details in pairs.items():
         print(f"Function: {function}")
         print("   Property: " + details["property"])
+        print("   Description: " + details["description"])
+        print("   Purpose: " + details["purpose"])
         if details["preconditions"]:
             print("   Preconditions: " + ", ".join(details["preconditions"]))
         if details["postconditions"]:
