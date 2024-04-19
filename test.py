@@ -1,6 +1,6 @@
-from main import annotate_code
+from main import annotate_code, produce_completion_prompt, get_code_completion, compile_code
 
-function_properties = {
+function_property_pairs = {
     "totalSupply": {
         "property": "",
         "description": "Retrieves the total supply of tokens.",
@@ -52,20 +52,32 @@ function_properties = {
     }
 }
 
-def test():
+def main():
     """easy test"""
-    with open("code.sol", 'r') as file:
+    with open("demo/code-complete-error.sol", 'r') as file:
+    # with open("demo/code-incomplete.sol", 'r') as file:
         code = file.read()
-    working_status = True
-    pairs = {'transfer': '#if_succeeds {:msg "Transfer does not modify the sum of balances"} old(_balances[_to]) + old(_balances[msg.sender]) == _balances[_to] + _balances[msg.sender];'}
-    annotated_code = annotate_code(code, pairs)
-    print("annotated code\n")
-    print(annotated_code)
-    description = "Defines an ERC20 token contract managing ownership and transfer\
-        of fungible tokens."
-    purpose = "Enables creation and management of a digital token system on Ethereum for\
-        transfers and approvals."
-    precondition = "The deployer initializes the contract with a specific total supply.\
-        Users must have sufficient token balance for transfer-related operations."
-    postcondition = "The total supply of tokens is fixed post-deployment. All token operations\
-        are recorded and emit corresponding events for auditability and traceability."
+    # print("code\n")
+    # print(code)
+    # working_status = "Incomplete"
+    # annotated_code = annotate_code(code, function_property_pairs)
+    # print("annotated code\n")
+    # print(annotated_code)
+    # description = (
+    #     "Defines an ERC20 token contract managing ownership and transfer"
+    #     "of fungible tokens."
+    # )
+    # purpose = (
+    #     "Enables creation and management of a digital token system on Ethereum for"
+    #     "transfers and approvals."
+    # )
+    # completion_prompt = produce_completion_prompt(
+    #     code, working_status, description, purpose, function_property_pairs)
+    # print("completion prompt\n")
+    # print(completion_prompt)
+    # get_code_completion()
+    compile_code(code)
+    print("done")
+
+if __name__ == '__main__':
+    main()

@@ -27,10 +27,7 @@ def get_working_status():
 
     # Output the result
     print(f"You entered: {user_choice}")
-    if(user_choice.lower() == 'complete'):
-        return True
-    else:
-        return False
+    return user_choice
 
 def get_function_property_pairs():
     # TODO: add instructions for scribble specification language
