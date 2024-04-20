@@ -57,27 +57,29 @@ def run_scribble(code):
     with open(original_filename, 'w') as file:
         file.write(code)
     print(f"Solidity code written to {original_filename}")
-
+    flat_filename = original_filename.replace(".sol", ".flat.sol")
     try:
         command = [
             'scribble',
             original_filename,
-            '--output-mode', 'files',
+            '--output-mode', 'flat',
+            '--output', flat_filename,
             '--instrumentation-metadata-file', 'metadata'
         ]
 
         result = subprocess.run(command, check=True, text=True, capture_output=True)
         print("Scribble instrumentation successful.")
         print(result.stdout)
-        instructed_wrong_filename = "original.sol.instrumented"
-        instructed_correct_filename = "original.instrumented.sol"
-        os.rename(instructed_wrong_filename, instructed_correct_filename)
+        # instructed_wrong_filename = "original.sol.instrumented"
+        # instructed_correct_filename = "original.instrumented.sol"
+        # os.rename(instructed_wrong_filename, instructed_correct_filename)
         # TODO: reasonable return statement
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print("Failed to run Scribble:")
-        print(e.stderr)
-        return None
+        if not os.path.exists(flat_filename):
+            print("Failed to run Scribble:")
+            print(e.stderr)
+            return None
 
 def run_mythril(filename, parameters):
     command = [
@@ -85,15 +87,17 @@ def run_mythril(filename, parameters):
             'analyze',
             filename,
             '-t', parameters["transaction_depth"],
-            '--execution-timeout', 'parameters["execution_timeout"]'
+            '--execution-timeout', parameters["execution_timeout"]
         ]
-    try:
-        result = subprocess.run(command, check=True, text=True, capture_output=True)
-        print("mythril verification successful.")
-        print(result.stdout)
-        return result.stdout
-    except subprocess.CalledProcessError as e:
-        print("Failed to run mythril:")
-        print(e.stderr)
-        return None
+        # TODO: example for no security violations
+    result = subprocess.run(command, text=True, capture_output=True)
+    if result.returncode == 0:
+        print("Mythril verification successful.")
+        print("Standard Output:", result.stdout)
+    elif result.returncode == 1:
+        print("Security violations:")
+        print("Verification results:\n", result.stdout)  # Output may still be valuable
+    else:
+        print("An unexpected error occurred.")
+
 
