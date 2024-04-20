@@ -44,6 +44,22 @@ def produce_completion_prompt(code, status, description, purpose, function_prope
 
     return prompt
 
+def produce_verification_prompt(code):
+    prompt = f"""
+    I have a Solidity smart contract that has been instrumented for runtime verification. Below is the instrumented code:
+    ```
+    {code}
+    ```
+    I need to use the Mythril tool to validate this code and uncover any potential security vulnerabilities. However, I am unsure about the optimal settings for the following parameters:
+
+    - Transaction count (`-t`): Specifies the number of transactions to simulate.
+    - Execution timeout (`--execution-timeout`): Specifies the maximum time Mythril should spend executing the analysis, in seconds.
+    - Solver timeout (`--solver-timeout`): Specifies the maximum time allowed for the solver to run, in milliseconds.
+
+    Could you suggest the best values for these parameters to achieve thorough and effective security analysis? Also, please provide the complete Mythril command incorporating your recommended settings.
+    """
+    return prompt
+
 def main():
     code_prompt = "Please enter your code. Type 'exit' on a new line to finish."
     code = get_multiline_input(code_prompt)
