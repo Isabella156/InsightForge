@@ -18,6 +18,7 @@ def get_multiline_input(mutiline_prompt):
 
     return user_input
 
+# TODO: merge this function with get user choice
 def get_working_status():
     status_completer = WordCompleter(['Complete', 'Incomplete'], ignore_case=True)
     print("Question: Is your code complete or incomplete?")
@@ -103,3 +104,33 @@ def get_other_properties():
     description = get_multiline_input(description_prompt)
     purpose = get_multiline_input(purpose_prompt)
     return description, purpose
+
+def get_user_choice():
+    choices = ['Proceed with existing code', 'Input new code']
+    completer = WordCompleter(choices, ignore_case=True)
+    user_choice = prompt('Choose an option: ', completer=completer)
+    return user_choice.strip().lower()
+
+def get_mythril_parameters():
+    print("Please provide the fcommand line arguments parameters for Mythril",
+          "command using the provided results from ChatGPT.")
+
+    defaults = {
+        'transaction_depth': '1',
+        'execution_timeout': '86400',
+        'solver_timeout': '25000'
+    }
+
+    parameters = {}
+
+    parameters['transaction_depth'] = prompt(
+        'Enter transaction depth (press Enter to use the default 5): ',
+        default=defaults['transaction_depth'])
+    parameters['execution_timeout'] = prompt(
+        'Enter execution timeout in seconds (Press Enter to use the default 86400): ',
+        default=defaults['execution_timeout'])
+    parameters['solver_timeout'] = prompt(
+        'Enter solver timeout in milliseconds (Press Enter to use the default 25000): ',
+        default=defaults['solver_timeout'])
+
+    return parameters
