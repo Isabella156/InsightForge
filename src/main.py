@@ -1,17 +1,17 @@
-from code_interaction_utils import (
+from utils.code_interaction_utils import (
     annotate_code,
     produce_completion_prompt,
     produce_further_action_prompt,
     produce_verification_prompt,
 )
-from input_utils import (
+from utils.input_utils import (
     get_function_property_pairs,
     get_multiline_input,
     get_mythril_parameters,
     get_other_properties,
     get_user_choice,
 )
-from tool_util import compile_code, get_chatgpt_response, run_mythril, run_scribble
+from utils.tool_util import compile_code, get_chatgpt_response, run_mythril, run_scribble
 
 
 def get_code_and_properties():
