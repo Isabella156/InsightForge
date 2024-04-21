@@ -108,7 +108,7 @@ def get_user_choice(choices, prompt_message):
 
 
 def get_mythril_parameters():
-    print("\x1b[94mPlease provide the fcommand line arguments parameters for Mythril",
+    print("\x1b[94mPlease provide the command line arguments parameters for Mythril",
           "command using the provided results from ChatGPT.\x1b[0m")
 
     defaults = {

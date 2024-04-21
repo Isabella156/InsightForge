@@ -77,6 +77,8 @@ def run_scribble(code):
             print("\x1b[91mFailed to run Scribble:\x1b[0m")
             print("\x1b[91m", e.stderr, "\x1b[0m")
             return None
+        else:
+            return flat_filename
 
 
 def run_mythril(filename, parameters):

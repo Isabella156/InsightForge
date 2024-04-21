@@ -21,8 +21,8 @@ def get_code_and_properties():
     print("\x1b[95m{}\x1b[0m".format(code))
 
     working_status_choices = ['Complete', 'Incomplete']
-    working_status_prompt = ("\x1b[94mIs your code complete or incomplete?"
-                             "Enter 'Complete' or 'Incomplete': \x1b[0m")
+    working_status_prompt = ("Is your code complete or incomplete? "
+                             "Enter 'Complete' or 'Incomplete': ")
     working_status = get_user_choice(
         working_status_choices, working_status_prompt)
     print("\x1b[95mworking status:\x1b[0m")
@@ -53,11 +53,11 @@ def get_completed_code(code, working_status, description, purpose, pairs):
     code_completion_response = get_chatgpt_response(
         completion_system_message, completion_prompt)
     print("code completion response\n")
-    print(code_completion_response)
+    print("\x1b[95m{}\x1b[0m".format(code_completion_response))
 
     completed_code = get_multiline_input(
-        ("Please enter the completed code from ChatGPT, you can also make some changes."
-         "Type 'exit' on a new line to finish."))
+        ("\x1b[94mPlease enter the completed code from ChatGPT, you can also make some changes."
+         "Type 'exit' on a new line to finish.\x1b[0m"))
     print("\x1b[95mcompleted code:\n\x1b[0m")
     print("\x1b[95m{}\x1b[0m".format(completed_code))
     return completed_code
@@ -98,7 +98,7 @@ def get_instrumented_code(completed_code):
 
 def get_verification_results(instrumented_code, instrumented_file):
     verification_prompt = produce_verification_prompt(instrumented_code)
-    print("x1b[95mverification prompt\n\x1b[0m")
+    print("\x1b[95mverification prompt\n\x1b[0m")
     print("\x1b[95m{}\x1b[0m".format(verification_prompt))
 
     verification_system_message = ("You are an assistant for providing mythril"
@@ -115,13 +115,13 @@ def get_verification_results(instrumented_code, instrumented_file):
 
 
 def further_action(mythril_sucess, mythril_results, instrumented_code):
-    goodbye_message = "x1b[95mInsightForge has completed the task.\nThank you for using it :)\x1b[0m"
+    goodbye_message = "\x1b[95mInsightForge has completed the task.\nThank you for using it :)\x1b[0m"
     if mythril_sucess is True:
-        print("x1b[95mMythril verification successful.")
+        print("\x1b[95mMythril verification successful.\x1b[0m")
         print(goodbye_message)
         return
     elif mythril_sucess is False:
-        print("x1b[91mMythril verification failed.")
+        print("\x1b[91mMythril verification failed.\x1b[0m")
         further_action_choices = ['Exit the program',
                                   'Get further verification instructions from ChatGPT']
         further_action_prompt = ("Do you want to exit the program or"
@@ -157,23 +157,18 @@ def further_action(mythril_sucess, mythril_results, instrumented_code):
             print(goodbye_message)
             return
     else:
-        print("x1b[91mMythril verification failed.\x1b[0m")
+        print("\x1b[91mMythril verification failed.\x1b[0m")
         print(goodbye_message)
         return
 
 
 def main():
-
     annotated_code, working_status, pairs, description, purpose = get_code_and_properties()
-
     completed_code = get_completed_code(
         annotated_code, working_status, description, purpose, pairs)
-
     completed_code = get_compilation_results(completed_code)
-
     instrumented_code, instrumented_file = get_instrumented_code(
         completed_code)
-
     mythril_sucess, mythril_results = get_verification_results(
         instrumented_code, instrumented_file)
     further_action(mythril_sucess, mythril_results, instrumented_code)
