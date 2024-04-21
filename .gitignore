@@ -1,0 +1,8 @@
+__pycache__/
+.vscode/
+Token/
+metadata
+.python-version
+note.md
+original.flat.sol
+original.sol
