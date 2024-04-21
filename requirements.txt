@@ -1,0 +1,4 @@
+openai==1.23.2
+pexpect==4.9.0
+prompt_toolkit==3.0.43
+py_solc_x==1.1.0
