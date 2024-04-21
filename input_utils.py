@@ -18,18 +18,6 @@ def get_multiline_input(mutiline_prompt):
 
     return user_input
 
-# TODO: merge this function with get user choice
-def get_working_status():
-    status_completer = WordCompleter(['Complete', 'Incomplete'], ignore_case=True)
-    print("Question: Is your code complete or incomplete?")
-
-    # Ask the question
-    user_choice = prompt("Enter 'Complete' or 'Incomplete': ", completer=status_completer)
-
-    # Output the result
-    print(f"You entered: {user_choice}")
-    return user_choice
-
 def get_function_property_pairs():
     # TODO: add instructions for scribble specification language
     pairs = {}
@@ -105,10 +93,9 @@ def get_other_properties():
     purpose = get_multiline_input(purpose_prompt)
     return description, purpose
 
-def get_user_choice():
-    choices = ['Proceed with existing code', 'Input new code']
+def get_user_choice(choices, prompt_message):
     completer = WordCompleter(choices, ignore_case=True)
-    user_choice = prompt('Choose an option: ', completer=completer)
+    user_choice = prompt(prompt_message, completer=completer)
     return user_choice.strip().lower()
 
 def get_mythril_parameters():
