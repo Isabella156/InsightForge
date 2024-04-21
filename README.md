@@ -40,7 +40,7 @@ To run the main InsightForge application:
 docker run -it -e OPENAI_API_KEY='your-openai-api-key' insightforge
 ```
 
-This command starts the InsightForge application in an interactive Docker container, enabling you to interact with ChatGPT for Solidity code generation.
+This command starts the InsightForge application in an interactive Docker container, enabling you to interact with ChatGPT for Solidity code generation. `demo/demo.md` provide example commands to run the application.
 
 ### Pipeline Demonstration
 
