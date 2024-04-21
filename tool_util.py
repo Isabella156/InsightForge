@@ -1,9 +1,11 @@
-from openai import OpenAI
-from solcx import compile_standard, install_solc, get_installed_solc_versions, set_solc_version
-from solcx.exceptions import SolcError
-import subprocess
-import os
 import json
+import os
+import subprocess
+
+from openai import OpenAI
+from solcx import compile_standard, get_installed_solc_versions, install_solc, set_solc_version
+from solcx.exceptions import SolcError
+
 
 def get_chatgpt_response(system_message, user_message):
     client = OpenAI()
@@ -13,19 +15,17 @@ def get_chatgpt_response(system_message, user_message):
             {"role": "system", "content": system_message},
             {"role": "user", "content": user_message}
         ]
-        )
+    )
     return completion.choices[0].message.content
 
+
 def compile_code(code):
-    # Specify the version of the compiler you need
     solc_version = '0.6.0'
 
-    # Check if the specified version is already installed
     if solc_version not in get_installed_solc_versions():
         print(f"Installing solc version {solc_version}...")
         install_solc(solc_version)
 
-    # Explicitly set the solc version for py-solc-x to use
     set_solc_version(solc_version)
 
     compiled_input = {
@@ -43,21 +43,22 @@ def compile_code(code):
     }
 
     try:
-        print("Compiling code...")
+        print("\x1b[94mCompiling code...\x1b[0m")
         compile_standard(compiled_input)
-        print("Compilation successful.")
+        print("\x1b[94mCompilation successful.\x1b[0m")
         return True
     except SolcError as e:
-        print("Compilation failed with errors:")
-        print(e)
+        print("\x1b[91mCompilation failed with errors:")
+        print("x1b[91m", e, "\x1b[0m")
         return False
+
 
 def run_scribble(code):
     original_filename = "original.sol"
     with open(original_filename, 'w') as file:
         file.write(code)
     print(f"Solidity code written to {original_filename}")
-    flat_filename = original_filename.replace(".sol", ".flat.sol")
+    flat_filename = "original.flat.sol"
     try:
         command = [
             'scribble',
@@ -67,36 +68,36 @@ def run_scribble(code):
             '--instrumentation-metadata-file', 'metadata'
         ]
 
-        result = subprocess.run(command, check=True, text=True, capture_output=True)
-        print("Scribble instrumentation successful.")
+        subprocess.run(command, check=True,
+                       text=True, capture_output=True)
+        print("\x1b[94mScribble instrumentation successful.\x1b[0m")
         return flat_filename
     except subprocess.CalledProcessError as e:
         if not os.path.exists(flat_filename):
-            print("Failed to run Scribble:")
-            print(e.stderr)
+            print("\x1b[91mFailed to run Scribble:\x1b[0m")
+            print("\x1b[91m", e.stderr, "\x1b[0m")
             return None
+
 
 def run_mythril(filename, parameters):
     command = [
-            'myth',
-            'analyze',
-            filename,
-            '-t', parameters["transaction_depth"],
-            '--execution-timeout', parameters["execution_timeout"],
-            '--solver-timeout', parameters["solver_timeout"],
-        ]
-        # TODO: example for no security violations
+        'myth',
+        'analyze',
+        filename,
+        '-t', parameters["transaction_depth"],
+        '--execution-timeout', parameters["execution_timeout"],
+        '--solver-timeout', parameters["solver_timeout"],
+    ]
+    # TODO: example for no security violations
     result = subprocess.run(command, text=True, capture_output=True)
     if result.returncode == 0:
-        print("Mythril verification successful.")
-        print("Standard Output\n:", result.stdout)
+        print("\x1b[95mMythril verification successful.\x1b[0m")
+        print("\x1b[95mStandard Output\n:", result.stdout, "\x1b[0m")
         return (True, result.stdout)
     elif result.returncode == 1:
-        print("Security violations:")
-        print("Verification results:\n", result.stdout)
+        print("\x1b[91mSecurity violations:\x1b[0m")
+        print("\x1b[91mVerification results:\n", result.stdout, "\x1b[0m")
         return (False, result.stdout)
     else:
-        print("An unexpected error occurred.")
+        print("\x1b[91mAn unexpected error occurred.\x1b[0m")
         return (None, None)
-
-
