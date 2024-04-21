@@ -56,3 +56,15 @@ def produce_verification_prompt(code):
     Could you suggest the best values for these parameters to achieve thorough and effective security analysis? Also, please provide the complete Mythril command incorporating your recommended settings.
     """
     return prompt
+
+def produce_further_action_prompt(verification_info, instructed_code):
+    prompt_text = (
+        "I've run a Mythril verification on a section of my smart contract,"
+        " and it identified several issues. Here is the code I analyzed:"
+        f"```solidity\n{instructed_code}\n```\n",
+        "Here are the details of the issues found:\n",
+        f"{verification_info}\n",
+        "Based on the code and these findings, could you suggest some specific"
+        "modifications or best practices"
+    )
+    return prompt_text
