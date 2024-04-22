@@ -11,7 +11,7 @@ from utils.input_utils import (
     get_other_properties,
     get_user_choice,
 )
-from utils.tool_util import compile_code, get_chatgpt_response, run_mythril, run_scribble
+from utils.tool_utils import compile_code, get_chatgpt_response, run_mythril, run_scribble
 
 
 def get_code_and_properties():
